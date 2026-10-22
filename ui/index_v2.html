@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T&T</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css?v=2">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- TOP HEADER -->
+    <header class="app-header">
+      <div class="header-logo">
+        <img id="app-logo" src="assets/autofotello-app-logo.png" alt="T&T Logo" class="logo-image">
+        <div class="app-title-group">
+          <h1 id="app-title">T&T</h1>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="startAppTour()" style="margin-right: 8px; padding: 8px 12px; font-size: 13px;" id="btn-tour">
+          Hướng dẫn
+        </button>
+        <div class="service-dropdown" id="service-dropdown">
+          <button class="service-dropdown-trigger" id="service-dropdown-trigger" onclick="toggleServiceDropdown(event)">
+            <img id="dropdown-active-logo" src="assets/autohdr-logo.webp" class="svc-logo">
+            <span id="dropdown-active-name">AutoHDR</span>
+            <span class="dropdown-arrow">▼</span>
+          </button>
+          <div class="service-dropdown-menu" id="service-dropdown-menu">
+            <div class="service-dropdown-item active" id="svc-autohdr" onclick="selectDropdownService('autohdr')">
+              <img src="assets/autohdr-logo.webp" alt="AutoHDR" class="svc-logo">
+              <span>AutoHDR</span>
+            </div>
+            <div class="service-dropdown-item" id="svc-autoenhance" onclick="selectDropdownService('autoenhance')">
+              <img src="assets/autoenhance-logo.svg" alt="Autoenhance" class="svc-logo">
+              <span>Autoenhance</span>
+            </div>
+            <div class="service-dropdown-item" id="svc-fotello" onclick="selectDropdownService('fotello')">
+              <img src="assets/fotelo-logo.webp" alt="Fotello" class="svc-logo">
+              <span>Fotello</span>
+            </div>
+          </div>
+        </div>
+        <div id="autohdr-credit-display" style="display: none; margin-right: 15px; color: var(--accent-color); font-weight: 500; font-size: 14px; align-items: center;">
+          <span id="autohdr-credit-text"></span>
+        </div>
+        <button id="btn-check-email" class="btn btn-secondary" onclick="promptCheckEmail()" style="margin-right: 10px; display: none; background: #3b3f46; color: white;" title="Tra cứu Email (AutoHDR)">
+          Tra cứu
+        </button>
+        <button id="btn-connect" class="btn btn-primary" onclick="toggleServiceLogin()">
+          Đăng nhập
+        </button>
+      </div>
+    </header>
+
+    <div class="app-main">
+      <!-- SIDE NAVIGATION -->
+      <aside class="app-sidebar">
+        <nav class="side-nav">
+          <button id="tab-upload" class="nav-item active" onclick="switchTab('upload')">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; display: block;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <span>Upload & Enhance</span>
+          </button>
+          <button id="tab-download" class="nav-item" onclick="switchTab('download')">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; display: block;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>Tải Listings cũ</span>
+          </button>
+        </nav>
+        
+      </aside>
+
+      <!-- CONTENT WINDOW -->
+      <main class="app-content" style="position: relative;">
+
+        <!-- UPLOAD SECTION -->
+        <section id="sec-upload" class="content-tab-panel active">
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h2 class="section-title-with-logo">
+                  <img id="upload-service-logo" class="section-title-logo" src="assets/fotelo-logo.webp" alt="logo">
+                  <span>Upload & Tự Động Xử Lý HDR</span>
+                </h2>
+                <p>Tự động tải ảnh thô lên và kích hoạt xử lý ngay lập tức.</p>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn btn-secondary" id="btn-top-manage-profiles" style="font-size: 13px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; display: none;" onclick="openStyleProfilesModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                  <span id="wizard-autohdr-profile-label" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Style Profiles</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="card-body">
+              <div class="upload-dropzone-container">
+                <div class="upload-dropzone" onclick="browseImageFiles()">
+                  <div class="dropzone-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="url(#uploadGrad)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 4px 8px rgba(236, 72, 153, 0.35));">
+                      <defs>
+                        <linearGradient id="uploadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stop-color="#f9a8d4" />
+                          <stop offset="100%" stop-color="#ec4899" />
+                        </linearGradient>
+                      </defs>
+                      <polyline points="16 16 12 12 8 16"></polyline>
+                      <line x1="12" y1="12" x2="12" y2="21"></line>
+                      <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+                    </svg>
+                  </div>
+                  <h3>Chọn ảnh gốc (RAW/JPG)</h3>
+                  <p>Hỗ trợ ảnh JPG, PNG và các định dạng RAW (CR2, CR3, NEF, ARW, DNG...)</p>
+                  <div class="dropzone-actions">
+                    <button class="btn btn-primary">Chọn ảnh từ máy tính</button>
+                    <button class="btn btn-secondary" onclick="event.stopPropagation(); browseDropboxInput('upload')">Dropbox</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer" id="upload-footer" style="display: none;">
+              <div style="display: flex; justify-content: flex-end; width: 100%;">
+                <button id="btn-stop-upload" class="btn btn-danger btn-large" onclick="stopTask()">
+                  ■ Dừng lại
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DOWNLOAD SECTION -->
+        <section id="sec-download" class="content-tab-panel">
+          <div class="card">
+            <div class="card-header flex-header">
+              <div>
+                <h2 class="section-title-with-logo">
+                  <img id="download-service-logo" class="section-title-logo" src="assets/fotelo-logo.webp" alt="logo">
+                  <span>Tải Listings đã có sẵn</span>
+                </h2>
+                <p>Tải ảnh HDR từ các Listings cũ của bạn.</p>
+              </div>
+              <button id="btn-refresh-listings" class="btn btn-secondary" onclick="refreshListings(true)" style="display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s ease;">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                Tải lại danh sách
+              </button>
+            </div>
+
+            <div class="card-body">
+              <div class="listings-table-container">
+                <table class="listings-table">
+                  <thead>
+                    <tr>
+                      <th width="40"><input type="checkbox" id="select-all-cb" onchange="toggleAllListings()"></th>
+                      <th>Tên Listing</th>
+                      <th width="100">Số ảnh</th>
+                      <th width="160">Ngày tạo</th>
+                    </tr>
+                  </thead>
+                  <tbody id="listings-list">
+                    <tr>
+                      <td colspan="4" class="empty-state">
+                        Chưa có dữ liệu. Bấm "Tải lại danh sách" để hiển thị.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button id="btn-start-download" class="btn btn-primary btn-large" onclick="startDownload()">
+                Bắt đầu tải các dự án đã chọn
+              </button>
+              <button id="btn-stop-download" class="btn btn-danger btn-large hidden" onclick="stopTask()">
+                ■ Dừng lại
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- UPSCALE SECTION -->
+        <section id="sec-upscale" class="content-tab-panel" style="display: none !important;">
+          <div class="card">
+            <div class="card-header">
+              <h2>Upscale ảnh 2x</h2>
+              <p>Upscale bằng Real-ESRGAN trên GPU, ưu tiên chất lượng ảnh và lưu kết quả với đúng tên file gốc.</p>
+            </div>
+
+            <div class="card-body">
+
+              <div class="upload-dropzone-container">
+                <div class="upload-dropzone upscale-dropzone" onclick="browseUpscaleFiles()">
+                  <div class="dropzone-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="url(#upscaleGrad)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 4px 8px rgba(52, 199, 89, 0.25));">
+                      <defs>
+                        <linearGradient id="upscaleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#86efac" />
+                          <stop offset="100%" stop-color="#22c55e" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" />
+                      <path d="M19 14l.9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9L19 14z" />
+                      <path d="M5 15l.7 1.6L7 17l-1.3.4L5 19l-.7-1.6L3 17l1.3-.4L5 15z" />
+                    </svg>
+                  </div>
+                  <h3>Chọn ảnh cần upscale 2x</h3>
+                  <p>Hỗ trợ JPG, PNG, WebP. Kết quả ưu tiên chất lượng cao.</p>
+                  <div class="dropzone-actions">
+                    <button class="btn btn-primary">Chọn ảnh</button>
+                    <button class="btn btn-secondary" onclick="event.stopPropagation(); browseDropboxInput('upscale')">Dropbox</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer" style="display: none;">
+              <button id="btn-start-upscale" class="btn btn-primary btn-large" onclick="startRunpodUpscale()">
+                Bắt đầu xử lý
+              </button>
+              <button id="btn-stop-upscale" class="btn btn-danger btn-large hidden" onclick="stopTask()">
+                ■ Dừng lại
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- DTE SECTION -->
+        <section id="sec-dte" class="content-tab-panel" style="display: none !important;">
+          <div class="card">
+            <div class="card-header">
+              <h2>Virtual Twilight (DTE)</h2>
+              <p>Chuyển ảnh ngày thành ảnh hoàng hôn/tối bằng AI. Miễn phí.</p>
+            </div>
+
+            <div class="card-body" style="padding: 16px 20px 20px;">
+
+              <!-- Compact DTE dropzone -->
+              <div class="upload-dropzone dte-dropzone" onclick="browseDteFiles()">
+                <div class="dte-drop-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                  </svg>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-size: 14px; font-weight: 600; color: var(--text-color); white-space: nowrap;">Tải ảnh lên (Virtual Twilight)</div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Click hoặc kéo thả ảnh JPG / PNG vào đây</div>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.25); border-radius: 6px; padding: 4px 10px; white-space: nowrap; flex-shrink: 0;">Chọn file</div>
+              </div>
+
+              <!-- File list -->
+              <div id="dte-dropzone-list" class="file-list hidden" style="margin-top: 8px;"></div>
+
+              <!-- Options row: 2 columns -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px;">
+                <div>
+                  <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em;">Loại ảnh</label>
+                  <select id="dte-mode" class="text-input" style="font-size: 13px;" onchange="document.getElementById('dte-sky-group').style.display = this.value === 'exterior' ? 'block' : 'none';">
+                    <option value="exterior" selected>🏠 Ngoại thất (Exterior)</option>
+                    <option value="interior">🛋 Nội thất (Interior)</option>
+                  </select>
+                </div>
+                <div id="dte-sky-group">
+                  <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em;">Bầu trời</label>
+                  <select id="dte-sky" class="text-input" style="font-size: 13px;">
+                    <option value="colorful" selected>🌅 Rực rỡ (Colorful)</option>
+                    <option value="natural">🌿 Tự nhiên (Natural)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Prompt -->
+              <div style="margin-top: 12px;">
+                <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em;">Yêu cầu thêm <span style="font-weight: 400; text-transform: none;">(tùy chọn)</span></label>
+                <input type="text" id="dte-prompt" class="text-input" style="font-size: 13px;" placeholder='VD: "turn on lights", "add warm glow"'>
+              </div>
+
+              <!-- Hidden upscale checkbox always checked -->
+              <div style="display: none;"><input type="checkbox" id="dte-upscale" checked></div>
+
+              <!-- Action button -->
+              <div id="dte-footer" style="margin-top: 16px;">
+                <button id="btn-start-dte" class="btn btn-primary btn-large" onclick="startDte()" style="width: 100%; background: linear-gradient(135deg, #db2777, #ec4899); border: none; padding: 11px; font-size: 14px; font-weight: 600; letter-spacing: 0.02em; border-radius: 10px; box-shadow: 0 4px 14px rgba(236,72,153,0.3); transition: all 0.2s;">
+                  Bắt đầu xử lý
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- DETAIL MERGE SECTION -->
+        <section id="sec-merge" class="content-tab-panel" style="display: none !important;">
+          <div class="card">
+            <div class="card-header">
+              <h2>Merge chi tiết ảnh gốc</h2>
+              <p>Giữ lại vân gỗ, chữ, đèn, ổ điện và các chi tiết nhỏ từ ảnh gốc.</p>
+            </div>
+
+            <div class="card-body">
+              <div class="merge-panel">
+                <!-- Row: Ảnh gốc -->
+                <div id="merge-original-drop" class="merge-field-row merge-input-drop" data-merge-kind="original">
+                  <div class="merge-field-info">
+                    <div class="merge-field-header">
+                      <span class="merge-field-title">Ảnh gốc</span>
+                    </div>
+                    <div class="merge-field-path" id="merge-original-path">Chưa chọn thư mục</div>
+                  </div>
+                  <div class="merge-field-actions">
+                    <button type="button" class="btn-folder-select" onclick="browseMergeFolder('original')">
+                      Chọn ảnh từ máy tính
+                    </button>
+                    <button type="button" class="btn-folder-select" onclick="browseDropboxInput('merge-original')">
+                      Dropbox
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Row: Ảnh AI -->
+                <div id="merge-ai-drop" class="merge-field-row merge-input-drop" data-merge-kind="ai">
+                  <div class="merge-field-info">
+                    <div class="merge-field-header">
+                      <span class="merge-field-title">Ảnh AI</span>
+                    </div>
+                    <div class="merge-field-path" id="merge-ai-path">Chưa chọn thư mục</div>
+                  </div>
+                  <div class="merge-field-actions">
+                    <button type="button" class="btn-folder-select" onclick="browseMergeFolder('ai')">
+                      Chọn ảnh từ máy tính
+                    </button>
+                    <button type="button" class="btn-folder-select" onclick="browseDropboxInput('merge-ai')">
+                      Dropbox
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Row: Lưu kết quả -->
+                <div class="merge-field-row">
+                  <div class="merge-field-info">
+                    <div class="merge-field-header">
+                      <span class="merge-field-title">Lưu kết quả</span>
+                    </div>
+                    <div class="merge-field-path" id="merge-output-path">Chưa chọn thư mục</div>
+                  </div>
+                  <div class="merge-field-actions">
+                    <button type="button" class="btn-folder-select" onclick="browseMergeFolder('output')">
+                      Chọn ảnh từ máy tính
+                    </button>
+                    <button type="button" class="btn-folder-select" onclick="browseDropboxInput('merge-output')">
+                      Dropbox
+                    </button>
+                  </div>
+                </div>
+
+                <div class="merge-strength-row">
+                  <div>
+                    <strong>Giữ chi tiết gốc</strong>
+                    <small id="merge-strength-label">Tự nhiên</small>
+                  </div>
+                  <div class="merge-preset-control" role="group" aria-label="Mức giữ chi tiết">
+                    <button type="button" data-merge-preset="soft" onclick="setMergePreset('soft')">Mềm</button>
+                    <button type="button" data-merge-preset="natural" class="active" onclick="setMergePreset('natural')">Tự nhiên</button>
+                    <button type="button" data-merge-preset="crisp" onclick="setMergePreset('crisp')">Rõ nét</button>
+                  </div>
+                  <input id="merge-strength" type="hidden" value="0.38">
+                </div>
+                <div class="checkbox-group" style="margin-top: 16px; background: transparent; border: none; border-top: 1px solid rgba(255,255,255,0.05); border-radius: 0; padding: 16px 0 0 0;">
+                  <label for="merge-denoise">
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                      <strong style="font-size: 13px; color: var(--text-main);">Khử nhiễu ảnh gốc</strong>
+                      <small style="color: var(--text-muted); font-size: 12px; font-weight: normal;">Làm mịn nhiễu hạt, nhưng có thể mất vân gỗ/thớ vải li ti.</small>
+                    </div>
+                    <input id="merge-denoise" type="checkbox" checked>
+                  </label>
+                </div>
+                
+                <!-- Thanh trượt Highlight & Shadow -->
+                <div class="merge-sliders-group" style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px; display: flex; flex-direction: column; gap: 14px;">
+                  <div class="slider-row" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: column; gap: 2px; max-width: 60%;">
+                      <strong style="font-size: 13px; color: var(--text-main);">Cứu sáng (Highlight)</strong>
+                      <small style="color: var(--text-muted); font-size: 11px; font-weight: normal;">Giảm các vùng cháy sáng (cửa sổ, bóng đèn...)</small>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; flex-grow: 1; justify-content: flex-end;">
+                      <input type="range" id="merge-highlight" min="-100" max="100" value="0" style="width: 100px; accent-color: var(--primary); cursor: pointer;" oninput="document.getElementById('val-highlight').textContent = this.value > 0 ? '+' + this.value : this.value">
+                      <span id="val-highlight" style="font-size: 12px; font-weight: 600; min-width: 32px; text-align: right; color: var(--text-main);">0</span>
+                    </div>
+                  </div>
+                  <div class="slider-row" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: column; gap: 2px; max-width: 60%;">
+                      <strong style="font-size: 13px; color: var(--text-main);">Bù tối (Shadow)</strong>
+                      <small style="color: var(--text-muted); font-size: 11px; font-weight: normal;">Nâng sáng vùng tối hoặc làm đậm vùng bóng</small>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; flex-grow: 1; justify-content: flex-end;">
+                      <input type="range" id="merge-shadow" min="-100" max="100" value="0" style="width: 100px; accent-color: var(--primary); cursor: pointer;" oninput="document.getElementById('val-shadow').textContent = this.value > 0 ? '+' + this.value : this.value">
+                      <span id="val-shadow" style="font-size: 12px; font-weight: 600; min-width: 32px; text-align: right; color: var(--text-main);">0</span>
+                    </div>
+                  </div>
+                </div>
+
+                <input id="merge-align" type="checkbox" checked hidden>
+                <input id="merge-restore" type="checkbox" checked hidden>
+                <input id="merge-white-balance" type="checkbox" checked hidden>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button id="btn-start-merge" class="btn btn-primary btn-large" onclick="startDetailMerge()">
+                Bắt đầu merge chi tiết
+              </button>
+              <button id="btn-stop-merge" class="btn btn-danger btn-large hidden" onclick="stopTask()">
+                ■ Dừng lại
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- BOTTOM PROGRESS & CONSOLE LOGGER -->
+    <footer class="app-footer" id="app-footer">
+      <div class="footer-resizer" id="footer-resizer"></div>
+      <div class="collapsed-log-trigger" id="collapsed-log-trigger" onclick="toggleLogPanel()">
+        <span>📊</span> <span>Hiện bảng log</span>
+      </div>
+
+      <!-- PROGRESS BLOCK -->
+      <div id="progress-container" class="progress-container hidden">
+        <div class="progress-info">
+          <span id="progress-status-text">Đang chạy...</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+      
+      <!-- LOGS CONSOLE -->
+      <div class="console-box">
+        <div class="console-header">
+          <div class="log-tabs" id="log-tabs">
+            <button class="log-tab active" id="tab-global" onclick="switchLogTab('global')">Chung</button>
+          </div>
+          <div class="console-actions">
+            <button class="btn-log-action" onclick="toggleLogPanel()">Ẩn log</button>
+            <button id="btn-copy-log" class="btn-log-action" onclick="copyActiveLog()">Copy log</button>
+            <button class="btn-log-action" onclick="clearLogs()">Xóa log</button>
+            <button class="btn-log-action" onclick="clearCompletedSessions()">Xóa luồng xong</button>
+          </div>
+        </div>
+        <div class="console-outputs" id="console-outputs">
+          <div id="console-output-global" class="console-output active">
+            <div class="log-line info">[SYS] Ứng dụng đã sẵn sàng. Khi cần, hệ thống sẽ yêu cầu đăng nhập Fotello hoặc AutoHDR.</div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+
+  <!-- GROUP LOADING OVERLAY -->
+  <div id="group-loading-overlay" class="global-lock-overlay hidden">
+    <div class="global-lock-card auth-loading-card">
+      <span class="auth-loading-icon">↻</span>
+      <h2>Đang gộp nhóm ảnh</h2>
+      <p>Hệ thống đang gom ảnh theo thứ tự, mặc định 3 ảnh mỗi nhóm...</p>
+    </div>
+  </div>
+
+  <!-- FIRST-RUN ONBOARDING MODAL -->
+  <div id="onboarding-welcome-modal" class="modal-backdrop onboarding-welcome-backdrop hidden">
+    <div class="onboarding-welcome-card" role="dialog" aria-modal="true" aria-labelledby="onboarding-welcome-title">
+      <div class="onboarding-welcome-glow"></div>
+      <div class="onboarding-welcome-logo-wrap">
+        <img src="assets/autofotello-app-logo.png" alt="AutoFotello" class="onboarding-welcome-logo">
+      </div>
+      <span class="onboarding-welcome-eyebrow">Chào mừng đến với AutoFotello</span>
+      <h2 id="onboarding-welcome-title">Bạn muốn xem hướng dẫn nhanh?</h2>
+      <p class="onboarding-welcome-description">
+        Chỉ mất khoảng 2 phút để làm quen với quy trình xử lý ảnh, tải dự án và các thiết lập quan trọng.
+      </p>
+      <div class="onboarding-welcome-benefits">
+        <div class="onboarding-benefit-item">
+          <span class="onboarding-benefit-icon">1</span>
+          <span>Chọn đúng dịch vụ và đăng nhập</span>
+        </div>
+        <div class="onboarding-benefit-item">
+          <span class="onboarding-benefit-icon">2</span>
+          <span>Upload, gom nhóm và xử lý ảnh</span>
+        </div>
+        <div class="onboarding-benefit-item">
+          <span class="onboarding-benefit-icon">3</span>
+          <span>Xem lại và tải kết quả nhanh chóng</span>
+        </div>
+      </div>
+      <div class="onboarding-welcome-actions">
+        <button class="btn onboarding-skip-btn" onclick="completeOnboardingChoice(false)">Để sau</button>
+        <button class="btn btn-primary onboarding-start-btn" onclick="completeOnboardingChoice(true)">
+          Xem hướng dẫn
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
+      <p class="onboarding-welcome-note">Bạn luôn có thể mở lại bằng nút Hướng dẫn ở phía trên.</p>
+    </div>
+  </div>
+
+  <!-- UPDATE MODAL -->
+  <div id="update-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Cập Nhật Phần Mềm Mới</h3>
+        <button id="btn-close-update" class="btn-close-modal" onclick="closeUpdateModal()">×</button>
+      </div>
+      <div class="modal-body" style="text-align: center; padding: 20px 24px;">
+        <div style="font-size: 48px; margin-bottom: 16px;">⚙️</div>
+        <p style="font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text-main);">Đã có phiên bản cập nhật mới!</p>
+        
+        <div class="update-ver-tag" style="margin-bottom: 16px;">
+          Phiên bản hiện tại: <span id="update-curr-ver">-</span> &nbsp;|&nbsp; 
+          Mới nhất: <span id="update-late-ver" style="color: #10b981;">-</span>
+        </div>
+        
+        <p id="update-force-warning" class="payment-warning hidden" style="margin-bottom: 0; text-align: left; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #ef4444;">
+          ⚠️ <strong>Quan trọng:</strong> Đây là bản cập nhật bắt buộc để tiếp tục sử dụng phần mềm.
+        </p>
+      </div>
+      <div class="modal-footer" style="display: flex; gap: 12px;">
+        <button id="btn-update-now" class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="doUpdateApp()">
+          Tải bản cập nhật
+        </button>
+        <button id="btn-update-later" class="btn btn-secondary" style="flex: 1; padding: 12px;" onclick="closeUpdateModal()">
+          Để sau
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECK EMAIL MODAL -->
+  <div id="check-email-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Tra cứu Email AutoHDR</h3>
+        <button class="btn-close-modal" onclick="closeCheckEmailModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-muted); margin-bottom: 12px; font-size: 13px;">Nhập email cần tra cứu để lấy thông tin ID và số dư Credit trên AutoHDR.</p>
+        <div class="form-group" style="margin-bottom: 15px;">
+          <input type="email" id="check-email-input" class="input-text" placeholder="Nhập email tài khoản..." style="width: 100%; padding-top: 2px;padding-bottom: 2px;" onkeydown="if(event.key==='Enter') executeCheckEmail()">
+        </div>
+        <div id="check-email-result" style="display: none; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 15px; font-size: 13px; line-height: 1.5; border: 1px solid var(--border-color);"></div>
+        <button id="btn-execute-check-email" class="btn btn-primary btn-full" onclick="executeCheckEmail()">Tra cứu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN SUCCESS MODAL -->
+  <div id="login-success-modal" class="modal-backdrop hidden">
+    <div class="modal-card login-success-card">
+      <div class="modal-body login-success-body">
+        <div class="login-success-icon">✓</div>
+        <h3 id="login-success-title">Đăng nhập thành công</h3>
+        <p id="login-success-message">Tài khoản đã sẵn sàng để sử dụng.</p>
+        <button class="btn btn-primary btn-full" onclick="closeLoginSuccessModal()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRACKET REVIEW MODAL -->
+  <div id="bracket-review-modal" class="modal-backdrop hidden">
+    <div class="modal-card" style="width: 800px; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 id="bracket-modal-title">Kiểm tra nhóm ảnh (Kéo & Thả)</h3>
+        <button class="btn-close-modal" onclick="closeBracketModal()">×</button>
+      </div>
+      <div class="modal-body" style="flex: 1; overflow-y: auto; background: var(--bg-dark); padding: 20px;">
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Hệ thống đã gom ảnh theo thứ tự với số lượng cố định trong mỗi nhóm. Vui lòng kiểm tra lại. Bạn có thể <b>kéo thả</b> tên ảnh để di chuyển hoặc thay đổi thứ tự giữa các nhóm.</p>
+        <div class="bracket-mode-bar">
+          <div class="form-group bracket-mode-select">
+            <label>Logic gom nhóm:</label>
+            <select id="bracket-modal-mode" onchange="syncFotelloBracketMode(this.value); reanalyzeBracketModal()">
+              <option value="time">Theo thời gian chụp</option>
+              <option value="order_fixed" selected>Theo thứ tự (Số lượng cố định)</option>
+            </select>
+          </div>
+          <div class="form-group bracket-mode-select" id="group-size-container" style="display: block;">
+            <label>Số ảnh mỗi nhóm:</label>
+            <select id="bracket-group-size" onchange="reanalyzeBracketModal()">
+              <option value="1">1 ảnh</option>
+              <option value="2">2 ảnh</option>
+              <option value="3" selected>3 ảnh</option>
+              <option value="4">4 ảnh</option>
+              <option value="5">5 ảnh</option>
+              <option value="6">6 ảnh</option>
+              <option value="7">7 ảnh</option>
+              <option value="8">8 ảnh</option>
+              <option value="9">9 ảnh</option>
+              <option value="10">10 ảnh</option>
+            </select>
+          </div>
+          <div class="form-group bracket-mode-select">
+            <label>Kiểu hiển thị:</label>
+            <select id="bracket-view-mode" onchange="applyBracketViewMode(this.value)">
+              <option value="carousel">Dạng Slide (Từng nhóm)</option>
+              <option value="filmstrip" selected>Dạng Lưới (Tất cả nhóm)</option>
+            </select>
+          </div>
+          <button id="btn-reanalyze-brackets" class="btn btn-secondary" onclick="reanalyzeBracketModal()" style="display: none;">Áp dụng lại</button>
+        </div>
+        
+        <div id="bracket-container" class="bracket-container bracket-view-carousel">
+          <!-- Image groups will be rendered here dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <span id="bracket-modal-status" style="font-size: 13px; color: var(--text-muted);">Tổng cộng: 0 nhóm</span>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <button id="btn-add-bracket-group" class="btn btn-secondary" onclick="addNewBracketGroup()" style="background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.3); color: #f472b6; font-weight: 500;">➕ Thêm nhóm</button>
+            <button class="btn btn-secondary" onclick="closeBracketModal()">Hủy</button>
+            <button id="btn-confirm-bracket-upload" class="btn btn-primary" onclick="confirmBracketUpload()"> Xác nhận & Upload</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT WIZARD MODAL (Name Your Project) -->
+  <div id="project-wizard-modal" class="modal-backdrop hidden">
+    <div class="modal-card wizard-modal-card">
+      <div class="modal-header no-border" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; position: relative;">
+        <h3>Đặt tên dự án</h3>
+        <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
+          <!-- Version selector for Autoenhance -->
+          <div id="wizard-version-wrapper" class="hidden" style="position: relative; display: flex; align-items: center;">
+            <div id="wizard-version-display" onclick="toggleWizardVersionDropdown(event)" style="font-size: 11px; background: rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 4px; color: #a1a1aa; cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 500; border: 1px solid rgba(255,255,255,0.1); user-select: none;">
+              <span id="wizard-version-display-label">V5 Stable</span>
+              <span style="font-size: 8px; color: #71717a;">▼</span>
+            </div>
+            <div id="wizard-version-dropdown" class="wizard-dropdown-menu hidden" style="top: 100%; right: 0; left: auto; min-width: 100px; padding: 4px; margin-top: 4px; z-index: 99;">
+              <div class="wizard-dropdown-item" onclick="selectWizardVersion('beta', event)">V5 Beta</div>
+              <div class="wizard-dropdown-item" onclick="selectWizardVersion('latest', event)">V5 Latest</div>
+              <div class="wizard-dropdown-item" onclick="selectWizardVersion('stable', event)">V5 Stable</div>
+            </div>
+          </div>
+          <button class="btn-close-modal" onclick="closeWizardModal()" style="position: static; margin: 0; line-height: 1;">×</button>
+        </div>
+      </div>
+      
+      <div class="modal-body wizard-modal-body">
+        <!-- Project Name Input -->
+        <div class="form-group" style="margin-bottom: 4px;">
+          <input type="text" id="wizard-project-name" class="wizard-input" placeholder="Nhập tên dự án..." oninput="updateWizardDestFolder(this.value)">
+        </div>
+        
+        <!-- Save Location summary -->
+        <div class="wizard-dest-row">
+          <span class="dest-label">📁 Lưu tại:</span>
+          <span id="wizard-dest-path" class="dest-path">Đang tải...</span>
+          <button class="btn-link-edit" onclick="changeWizardDestFolder()">Thay đổi</button>
+          <button class="btn-link-edit" onclick="changeWizardDropboxFolder()">Dropbox</button>
+        </div>
+
+        <!-- Upscale specific provider settings -->
+        <div id="wizard-upscale-settings" class="hidden" style="display: none; margin-top: 16px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 16px;">
+          <div class="form-group">
+            <label for="upscale-provider" style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px;">Xử lý bằng</label>
+            <select id="upscale-provider" class="text-input" onchange="updateUpscaleProviderUI()">
+              <option value="free" selected>Cloud - Miễn phí</option>
+              <option value="runpod">Cloud - Nhanh, ổn định (VIP)</option>
+              <option value="local">Local - Chạy trên máy này</option>
+            </select>
+          </div>
+          <div id="local-engine-panel" class="local-engine-panel hidden" style="margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px;">
+            <div id="local-engine-status" class="local-engine-status" style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Đang kiểm tra máy...</div>
+            <button id="btn-install-local-engine" class="btn btn-secondary" onclick="installLocalUpscaleEngine()" style="width: 100%; padding: 8px; font-size: 13px;">
+              Tải engine local
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer wizard-modal-footer">
+        <!-- Left side: Model display + arrow button -->
+        <div class="wizard-footer-left-wrapper" style="position: relative;">
+          <div class="wizard-footer-left" onclick="toggleWizardModelDropdown(event)">
+            <span id="wizard-model-display-label">AutoHDR Classic</span>
+            <span class="arrow-indicator">▼</span>
+          </div>
+          <div id="wizard-model-dropdown" class="wizard-dropdown-menu hidden"></div>
+        </div>
+        
+        <!-- Right side: Gear icon and Continue button -->
+        <div class="wizard-footer-right">
+          <button class="btn-icon-gear" onclick="toggleWizardAdvanced(event)" title="Tùy chọn nâng cao">⚙️</button>
+          
+          <!-- Floating Advanced Settings Dropdown Menu -->
+          <div id="wizard-advanced-dropdown" class="wizard-dropdown-menu hidden" style="padding: 16px; min-width: 280px; right: 0; left: auto;">
+            <div class="vertical-pref-list" id="wizard-fotello-prefs" style="position: relative; overflow: hidden; height: 210px; padding: 0; transition: height 0.25s ease;">
+              
+              <!-- Main Settings View -->
+              <div id="wizard-fotello-prefs-main" style="transition: transform 0.25s ease; width: 100%; position: absolute; top: 0; left: 0; padding: 8px 12px; box-sizing: border-box; height: 100%;">
+                <select id="wizard-pref-contrast" onchange="updateWizardModelLabel()" style="display: none;">
+                  <option value="signature" selected>Signature (Sắc nét)</option>
+                  <option value="soft">Natural (Tự nhiên)</option>
+                </select>
+
+                <label class="check-menu-item">
+                  <span>Thay thế nền trời (Sky)</span>
+                  <input type="checkbox" id="wizard-pref-sky" checked style="display: none;">
+                  <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </label>
+                
+                <label class="check-menu-item">
+                  <span>Cân góc phối cảnh (Perspective)</span>
+                  <input type="checkbox" id="wizard-pref-perspective" checked style="display: none;">
+                  <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </label>
+
+                <label class="check-menu-item">
+                  <span>Tự động đổi RAW/PNG sang JPG</span>
+                  <input type="checkbox" id="wizard-fotello-convert-jpg" checked style="display: none;">
+                  <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </label>
+
+                <div class="check-menu-item" style="display: none; cursor: pointer; justify-content: space-between;" onclick="document.getElementById('wizard-fotello-prefs-main').style.transform = 'translateX(-100%)'; document.getElementById('wizard-fotello-prefs-cloud').style.transform = 'translateX(0)'; document.getElementById('wizard-fotello-prefs').style.height = '240px';">
+                  <span>Kiểu mây (Cloud Style)</span>
+                  <span style="font-size: 18px; margin-right: 4px;">›</span>
+                </div>
+              </div>
+
+              <!-- Cloud Styles Sub-menu View -->
+              <div id="wizard-fotello-prefs-cloud" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.25s ease; transform: translateX(100%); background: #1f1f23; z-index: 2; display: flex; flex-direction: column; padding: 8px 12px; box-sizing: border-box;">
+                
+                <select id="wizard-pref-cloud" style="display: none;">
+                  <option value="original">Original</option>
+                  <option value="sunny_puffs" selected>Sunny puffs</option>
+                  <option value="loaded_puffs">Loaded puffs</option>
+                  <option value="streaks_with_puffs">Streaks & puffs</option>
+                  <option value="sweep_streaks">Sweep streaks</option>
+                  <option value="scatter_streaks">Scatter streaks</option>
+                  <option value="crisp_streaks">Crisp streaks</option>
+                  <option value="clear_fade">Clear fade</option>
+                </select>
+
+                <div style="display: flex; align-items: center; margin-bottom: 6px; padding: 2px 4px; border-bottom: 1px solid #3f3f46; padding-bottom: 6px;">
+                  <button type="button" style="background: none; border: none; color: #a1a1aa; font-size: 22px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.15s ease, color 0.15s ease; line-height: 1;"
+                          onclick="document.getElementById('wizard-fotello-prefs-cloud').style.transform = 'translateX(100%)'; document.getElementById('wizard-fotello-prefs-main').style.transform = 'translateX(0)'; document.getElementById('wizard-fotello-prefs').style.height = '160px';"
+                          onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff';"
+                          onmouseout="this.style.background='none'; this.style.color='#a1a1aa';">
+                    ‹
+                  </button>
+                  <span style="font-size: 13px; font-weight: 600; color: #e4e4e7; margin-left: 8px;">Kiểu mây</span>
+                </div>
+
+                <div style="overflow-y: auto; flex: 1; padding-right: 4px;" class="custom-scrollbar">
+                  <label class="check-menu-item cloud-style-item" onclick="selectCloudStyle('original')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <div style="width: 44px; height: 33px; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; box-sizing: border-box;">
+                      <span style="font-size: 10px; color: #71717a; font-weight: 600;">Gốc</span>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Original</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Giữ ảnh gốc</span>
+                    </div>
+                    <svg class="check-icon cloud-check" id="check-cloud-original" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+
+                  <label class="check-menu-item cloud-style-item active" onclick="selectCloudStyle('sunny_puffs')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/sunny_puffs.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Sunny puffs</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Mây bông nắng</span>
+                    </div>
+                    <svg class="check-icon cloud-check" id="check-cloud-sunny_puffs" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: block; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+
+                  <label class="check-menu-item cloud-style-item" onclick="selectCloudStyle('loaded_puffs')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/loaded_puffs.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Loaded puffs</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Mây bông dày</span>
+                    </div>
+                    <svg class="check-icon cloud-check" id="check-cloud-loaded_puffs" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+
+                  <label class="check-menu-item cloud-style-item" onclick="selectCloudStyle('streaks_with_puffs')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/streaks_with_puffs.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Streaks & puffs</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Mây sợi & bông</span>
+                    </div>
+                    <svg class="check-icon cloud-check" id="check-cloud-streaks_with_puffs" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+
+                  <label class="check-menu-item cloud-style-item" onclick="selectCloudStyle('sweep_streaks')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/sweep_streaks.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Sweep streaks</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Mây sợi quét</span>
+                    </div>
+                    <svg class="check-icon cloud-check" id="check-cloud-sweep_streaks" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+
+                  <label class="check-menu-item cloud-style-item" onclick="selectCloudStyle('scatter_streaks')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/scatter_streaks.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Scatter streaks</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Mây sợi rải rác</span>
+                    </div>
+                    <svg class="check-icon cloud-check" id="check-cloud-scatter_streaks" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+
+                  <label class="check-menu-item cloud-style-item" onclick="selectCloudStyle('crisp_streaks')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/crisp_streaks.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Crisp streaks</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Mây sợi rõ nét</span>
+                    </div>
+                    <svg class="check-icon cloud-check" id="check-cloud-crisp_streaks" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+
+                  <label class="check-menu-item cloud-style-item" onclick="selectCloudStyle('clear_fade')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/clear_fade.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Clear fade</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Trời xanh trong</span>
+                    </div>
+                    <svg class="check-icon cloud-check" id="check-cloud-clear_fade" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Autoenhance options -->
+            <div class="vertical-pref-list hidden" id="wizard-autoenhance-prefs">
+              <select id="wizard-autoenhance-model" onchange="updateWizardModelLabel()" style="display: none;">
+                <option value="warm">Warm</option>
+                <option value="vivid">Vivid</option>
+                <option value="natural" selected>Natural</option>
+              </select>
+
+              <select id="wizard-autoenhance-version" style="display: none;">
+                <option value="beta">V5 Beta</option>
+                <option value="latest">V5 Latest</option>
+                <option value="stable" selected>V5 Stable</option>
+              </select>
+
+              <!-- Main View -->
+              <div id="wizard-autoenhance-prefs-main" style="transition: transform 0.25s ease; width: 100%; position: absolute; top: 0; left: 0; padding: 8px 12px; box-sizing: border-box; height: 100%; overflow-y: auto;" class="custom-scrollbar">
+                
+                <div class="check-menu-item" style="cursor: pointer; justify-content: space-between;" onclick="openAutoenhanceSubmenu('sky')">
+                  <span>Thay thế nền trời (Sky)</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <span id="wizard-autoenhance-sky-label" style="font-size: 13px; color: #8b8ea9;">Off</span>
+                    <span style="font-size: 18px; color: #8b8ea9; line-height: 1;">›</span>
+                  </div>
+                </div>
+                <input type="hidden" id="wizard-autoenhance-sky-type" value="off">
+
+                <label class="check-menu-item">
+                  <span>Cân góc phối cảnh (Perspective)</span>
+                  <input type="checkbox" id="wizard-autoenhance-perspective" checked style="display: none;">
+                  <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </label>
+
+                <label class="check-menu-item">
+                  <span>Lens Correction</span>
+                  <input type="checkbox" id="wizard-autoenhance-lens" checked style="display: none;">
+                  <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </label>
+
+                <label class="check-menu-item">
+                  <span>Auto Privacy</span>
+                  <input type="checkbox" id="wizard-autoenhance-privacy" style="display: none;">
+                  <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </label>
+
+                <div class="check-menu-item" style="cursor: pointer; justify-content: space-between;" onclick="openAutoenhanceSubmenu('window')">
+                  <span>Window Pull</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <span id="wizard-autoenhance-window-label" style="font-size: 13px; color: #8b8ea9;">Off</span>
+                    <span style="font-size: 18px; color: #8b8ea9; line-height: 1;">›</span>
+                  </div>
+                </div>
+                <input type="hidden" id="wizard-autoenhance-window-type" value="off">
+
+                <div class="check-menu-item" style="cursor: pointer; justify-content: space-between;" onclick="openAutoenhanceSubmenu('grass')">
+                  <span>Thay cỏ (Grass)</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <span id="wizard-autoenhance-grass-label" style="font-size: 13px; color: #8b8ea9;">Off</span>
+                    <span style="font-size: 18px; color: #8b8ea9; line-height: 1;">›</span>
+                  </div>
+                </div>
+                <input type="hidden" id="wizard-autoenhance-grass-type" value="off">
+
+                <div class="check-menu-item" style="cursor: pointer; justify-content: space-between;" onclick="openAutoenhanceSubmenu('tv')">
+                  <span>TV Blackout</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <span id="wizard-autoenhance-tv-label" style="font-size: 13px; color: #8b8ea9;">Off</span>
+                    <span style="font-size: 18px; color: #8b8ea9; line-height: 1;">›</span>
+                  </div>
+                </div>
+                <input type="hidden" id="wizard-autoenhance-tv-type" value="off">
+
+                <div class="check-menu-item" style="cursor: pointer; justify-content: space-between;" onclick="openAutoenhanceSubmenu('fireplace')">
+                  <span>Fire in Fireplace</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <span id="wizard-autoenhance-fireplace-label" style="font-size: 13px; color: #8b8ea9;">Off</span>
+                    <span style="font-size: 18px; color: #8b8ea9; line-height: 1;">›</span>
+                  </div>
+                </div>
+                <input type="hidden" id="wizard-autoenhance-fireplace-type" value="off">
+
+                <div class="check-menu-item" style="cursor: pointer; justify-content: space-between;" onclick="openAutoenhanceSubmenu('photographer')">
+                  <span>Photographer Removal</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <span id="wizard-autoenhance-photographer-label" style="font-size: 13px; color: #8b8ea9;">Off</span>
+                    <span style="font-size: 18px; color: #8b8ea9; line-height: 1;">›</span>
+                  </div>
+                </div>
+                <input type="hidden" id="wizard-autoenhance-photographer-type" value="off">
+              </div>
+
+              <!-- Sky replacement Sub-menu View -->
+              <div id="wizard-autoenhance-prefs-sky" class="wizard-autoenhance-sub" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.25s ease; transform: translateX(100%); background: #1f1f23; z-index: 2; display: flex; flex-direction: column; padding: 8px 12px; box-sizing: border-box;">
+                <div style="display: flex; align-items: center; margin-bottom: 6px; padding: 2px 4px; border-bottom: 1px solid #3f3f46; padding-bottom: 6px;">
+                  <button type="button" style="background: none; border: none; color: #a1a1aa; font-size: 22px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.15s ease, color 0.15s ease; line-height: 1;"
+                          onclick="closeAutoenhanceSubmenu('sky')">
+                    ‹
+                  </button>
+                  <span style="font-size: 13px; font-weight: 600; color: #e4e4e7; margin-left: 8px;">Thay thế nền trời (Sky)</span>
+                </div>
+                <div style="overflow-y: auto; flex: 1; padding-right: 4px;" class="custom-scrollbar">
+                  <label class="check-menu-item autoenhance-sky-item active" onclick="selectAutoenhanceOption('sky', 'off', 'Off')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/sky-off.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Off</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Giữ nguyên bầu trời gốc</span>
+                    </div>
+                    <svg class="check-icon autoenhance-sky-check" id="check-ae-sky-off" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: block; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-sky-item" onclick="selectAutoenhanceOption('sky', 'clear', 'Clear')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/sky-clear.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Clear</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Trời nắng trong xanh</span>
+                    </div>
+                    <svg class="check-icon autoenhance-sky-check" id="check-ae-sky-clear" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-sky-item" onclick="selectAutoenhanceOption('sky', 'low_cloud', 'Low Cloud')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/sky-low-cloud.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Low Cloud</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Mây rải rác ít</span>
+                    </div>
+                    <svg class="check-icon autoenhance-sky-check" id="check-ae-sky-low_cloud" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-sky-item" onclick="selectAutoenhanceOption('sky', 'neutral', 'Neutral')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/sky-neutral.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">Neutral</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Mây nhẹ tự nhiên</span>
+                    </div>
+                    <svg class="check-icon autoenhance-sky-check" id="check-ae-sky-neutral" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-sky-item" onclick="selectAutoenhanceOption('sky', 'high_cloud', 'High Cloud')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <img src="assets/sky-high-cloud.jpg" style="width: 44px; height: 33px; border-radius: 4px; object-fit: cover; margin-right: 12px; flex-shrink: 0;" />
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">High Cloud</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Mây bông dày hơn</span>
+                    </div>
+                    <svg class="check-icon autoenhance-sky-check" id="check-ae-sky-high_cloud" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Window Pull Sub-menu View -->
+              <div id="wizard-autoenhance-prefs-window" class="wizard-autoenhance-sub" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.25s ease; transform: translateX(100%); background: #1f1f23; z-index: 2; display: flex; flex-direction: column; padding: 8px 12px; box-sizing: border-box;">
+                <div style="display: flex; align-items: center; margin-bottom: 6px; padding: 2px 4px; border-bottom: 1px solid #3f3f46; padding-bottom: 6px;">
+                  <button type="button" style="background: none; border: none; color: #a1a1aa; font-size: 22px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.15s ease, color 0.15s ease; line-height: 1;"
+                          onclick="closeAutoenhanceSubmenu('window')">
+                    ‹
+                  </button>
+                  <span style="font-size: 13px; font-weight: 600; color: #e4e4e7; margin-left: 8px;">Window Pull</span>
+                </div>
+                <div style="overflow-y: auto; flex: 1; padding-right: 4px;" class="custom-scrollbar">
+                  <label class="check-menu-item autoenhance-window-item active" onclick="selectAutoenhanceOption('window', 'off', 'Off')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Off</span>
+                    <svg class="check-icon autoenhance-window-check" id="check-ae-window-off" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-window-item" onclick="selectAutoenhanceOption('window', 'only_windows', 'Only Windows')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Only Windows</span>
+                    <svg class="check-icon autoenhance-window-check" id="check-ae-window-only_windows" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-window-item" onclick="selectAutoenhanceOption('window', 'windows_with_skies', 'Windows with Skies')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Windows with Skies</span>
+                    <svg class="check-icon autoenhance-window-check" id="check-ae-window-windows_with_skies" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Grass Sub-menu View -->
+              <div id="wizard-autoenhance-prefs-grass" class="wizard-autoenhance-sub" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.25s ease; transform: translateX(100%); background: #1f1f23; z-index: 2; display: flex; flex-direction: column; padding: 8px 12px; box-sizing: border-box;">
+                <div style="display: flex; align-items: center; margin-bottom: 6px; padding: 2px 4px; border-bottom: 1px solid #3f3f46; padding-bottom: 6px;">
+                  <button type="button" style="background: none; border: none; color: #a1a1aa; font-size: 22px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.15s ease, color 0.15s ease; line-height: 1;"
+                          onclick="closeAutoenhanceSubmenu('grass')">
+                    ‹
+                  </button>
+                  <span style="font-size: 13px; font-weight: 600; color: #e4e4e7; margin-left: 8px;">Thay cỏ (Grass)</span>
+                </div>
+                <div style="overflow-y: auto; flex: 1; padding-right: 4px;" class="custom-scrollbar">
+                  <label class="check-menu-item autoenhance-grass-item active" onclick="selectAutoenhanceOption('grass', 'off', 'Off')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Off</span>
+                    <svg class="check-icon autoenhance-grass-check" id="check-ae-grass-off" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-grass-item" onclick="selectAutoenhanceOption('grass', 'green', 'Green')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Green</span>
+                    <svg class="check-icon autoenhance-grass-check" id="check-ae-grass-green" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                </div>
+              </div>
+
+              <!-- TV Blackout Sub-menu View -->
+              <div id="wizard-autoenhance-prefs-tv" class="wizard-autoenhance-sub" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.25s ease; transform: translateX(100%); background: #1f1f23; z-index: 2; display: flex; flex-direction: column; padding: 8px 12px; box-sizing: border-box;">
+                <div style="display: flex; align-items: center; margin-bottom: 6px; padding: 2px 4px; border-bottom: 1px solid #3f3f46; padding-bottom: 6px;">
+                  <button type="button" style="background: none; border: none; color: #a1a1aa; font-size: 22px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.15s ease, color 0.15s ease; line-height: 1;"
+                          onclick="closeAutoenhanceSubmenu('tv')">
+                    ‹
+                  </button>
+                  <span style="font-size: 13px; font-weight: 600; color: #e4e4e7; margin-left: 8px;">TV Blackout</span>
+                </div>
+                <div style="overflow-y: auto; flex: 1; padding-right: 4px;" class="custom-scrollbar">
+                  <label class="check-menu-item autoenhance-tv-item active" onclick="selectAutoenhanceOption('tv', 'off', 'Off')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Off</span>
+                    <svg class="check-icon autoenhance-tv-check" id="check-ae-tv-off" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-tv-item" onclick="selectAutoenhanceOption('tv', 'black_out', 'Black Out')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Black Out</span>
+                    <svg class="check-icon autoenhance-tv-check" id="check-ae-tv-black_out" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Fire in Fireplace Sub-menu View -->
+              <div id="wizard-autoenhance-prefs-fireplace" class="wizard-autoenhance-sub" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.25s ease; transform: translateX(100%); background: #1f1f23; z-index: 2; display: flex; flex-direction: column; padding: 8px 12px; box-sizing: border-box;">
+                <div style="display: flex; align-items: center; margin-bottom: 6px; padding: 2px 4px; border-bottom: 1px solid #3f3f46; padding-bottom: 6px;">
+                  <button type="button" style="background: none; border: none; color: #a1a1aa; font-size: 22px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.15s ease, color 0.15s ease; line-height: 1;"
+                          onclick="closeAutoenhanceSubmenu('fireplace')">
+                    ‹
+                  </button>
+                  <span style="font-size: 13px; font-weight: 600; color: #e4e4e7; margin-left: 8px;">Fire in Fireplace</span>
+                </div>
+                <div style="overflow-y: auto; flex: 1; padding-right: 4px;" class="custom-scrollbar">
+                  <label class="check-menu-item autoenhance-fireplace-item active" onclick="selectAutoenhanceOption('fireplace', 'off', 'Off')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Off</span>
+                    <svg class="check-icon autoenhance-fireplace-check" id="check-ae-fireplace-off" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-fireplace-item" onclick="selectAutoenhanceOption('fireplace', 'alight', 'Alight')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Alight</span>
+                    <svg class="check-icon autoenhance-fireplace-check" id="check-ae-fireplace-alight" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Photographer Sub-menu View -->
+              <div id="wizard-autoenhance-prefs-photographer" class="wizard-autoenhance-sub" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.25s ease; transform: translateX(100%); background: #1f1f23; z-index: 2; display: flex; flex-direction: column; padding: 8px 12px; box-sizing: border-box;">
+                <div style="display: flex; align-items: center; margin-bottom: 6px; padding: 2px 4px; border-bottom: 1px solid #3f3f46; padding-bottom: 6px;">
+                  <button type="button" style="background: none; border: none; color: #a1a1aa; font-size: 22px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.15s ease, color 0.15s ease; line-height: 1;"
+                          onclick="closeAutoenhanceSubmenu('photographer')">
+                    ‹
+                  </button>
+                  <span style="font-size: 13px; font-weight: 600; color: #e4e4e7; margin-left: 8px;">Photographer Removal</span>
+                </div>
+                <div style="overflow-y: auto; flex: 1; padding-right: 4px;" class="custom-scrollbar">
+                  <label class="check-menu-item autoenhance-photographer-item active" onclick="selectAutoenhanceOption('photographer', 'off', 'Off')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Off</span>
+                    <svg class="check-icon autoenhance-photographer-check" id="check-ae-photographer-off" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                  <label class="check-menu-item autoenhance-photographer-item" onclick="selectAutoenhanceOption('photographer', 'remove', 'Remove')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: space-between;">
+                    <span>Remove</span>
+                    <svg class="check-icon autoenhance-photographer-check" id="check-ae-photographer-remove" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- AutoHDR options -->
+            <div class="vertical-pref-list hidden" id="wizard-autohdr-prefs">
+              <select id="wizard-autohdr-model" onchange="updateWizardModelLabel()" style="display: none;">
+                <option value="classic" selected>Classic (Tự nhiên, trong nhà)</option>
+                <option value="classic_v4">Classic V4 [New] (Mới nhất)</option>
+                <option value="lisa">Lisa (Nổi bật & Cửa sổ sâu)</option>
+                <option value="twilight_golden">Twilight Golden (Hoàng hôn vàng)</option>
+                <option value="twilight_pink">Twilight Pink (Hoàng hôn hồng)</option>
+                <option value="twilight_midnight">Twilight Midnight (Đêm xanh tím)</option>
+              </select>
+
+              <!-- Nút chọn chế độ xử lý -->
+              <div class="check-menu-item" style="cursor: pointer;" onclick="
+                var sel = document.getElementById('wizard-autohdr-mode');
+                var lbl = this.querySelector('span');
+                var modes = ['human_edit', 'inpaint', 'worker', 'donor'];
+                var labels = {'human_edit': 'Chế độ: Chính', 'inpaint': 'Chế độ: Inpaint', 'worker': 'Chế độ: Dự phòng', 'donor': 'Chế độ: Donor (Không cần đăng nhập)'};
+                var colors = {'human_edit': '#34d399', 'inpaint': '#f472b6', 'worker': '#fbbf24', 'donor': '#60a5fa'};
+                var idx = modes.indexOf(sel.value);
+                var next = modes[(idx + 1) % modes.length];
+                sel.value = next;
+                lbl.textContent = labels[next];
+                lbl.style.color = colors[next];
+              ">
+                <span style="color: #34d399;">Chế độ: Chính</span>
+                <select id="wizard-autohdr-mode" style="display: none;">
+                  <option value="human_edit" selected>Chính (Human Edit)</option>
+                  <option value="inpaint">Inpaint</option>
+                  <option value="worker">Dự phòng</option>
+                  <option value="donor">Donor (Không cần đăng nhập)</option>
+                </select>
+              </div>
+
+              <label class="check-menu-item">
+                <span>Thay thế nền trời (Sky)</span>
+                <input type="checkbox" id="wizard-autohdr-sky" checked style="display: none;">
+                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </label>
+
+              <label class="check-menu-item">
+                <span>Cân góc phối cảnh (Perspective)</span>
+                <input type="checkbox" id="wizard-autohdr-perspective" checked style="display: none;">
+                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </label>
+
+              <label class="check-menu-item">
+                <span>Làm xanh thảm cỏ (Grass)</span>
+                <input type="checkbox" id="wizard-autohdr-grass" style="display: none;">
+                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </label>
+
+              <label class="check-menu-item">
+                <span>Xóa vật thể thừa (Declutter)</span>
+                <input type="checkbox" id="wizard-autohdr-declutter" style="display: none;">
+                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </label>
+
+              <label class="check-menu-item">
+                <span>Xóa metadata (giữ Copyright)</span>
+                <input type="checkbox" id="wizard-autohdr-strip-metadata" style="display: none;">
+                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </label>
+
+              <label class="check-menu-item">
+                <span>Tự động đổi RAW/PNG sang JPG</span>
+                <input type="checkbox" id="wizard-autohdr-convert-jpg" checked style="display: none;">
+                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </label>
+
+
+            </div>
+
+            <!-- Upscale options -->
+            <div class="vertical-pref-list hidden" id="wizard-upscale-prefs" style="position: relative; overflow: hidden; height: 340px; padding: 0; transition: height 0.25s ease;">
+              
+              <!-- Main View -->
+              <div id="wizard-upscale-prefs-main" style="transition: transform 0.25s ease; width: 100%; position: absolute; top: 0; left: 0; padding: 8px 12px; box-sizing: border-box; height: 100%; overflow-y: auto; overflow-x: hidden;">
+                
+                <select id="wizard-upscale-scale" style="display: none;" onchange="updateWizardModelLabel()">
+                  <option value="upscale_2x" selected>x2 (Gấp đôi)</option>
+                  <option value="upscale_4x">x4 (Chỉ hỗ trợ Local)</option>
+                </select>
+
+                <div class="menu-item-group" style="margin-top: 0px;">
+                  <div class="range-label-row">
+                    <label class="menu-item-label">Độ nét AI vẽ</label>
+                    <span id="upscale-strength-val" style="font-size: 13px; color: #86efac; font-weight: 600;">75%</span>
+                  </div>
+                  <input type="range" id="wizard-upscale-strength" class="menu-item-range" min="0.40" max="1.0" step="0.01" value="0.75" style="width: 100%;" oninput="document.getElementById('upscale-strength-val').innerText = Math.round(this.value * 100) + '%'">
+                </div>
+
+                <div class="check-menu-item" style="cursor: pointer; justify-content: space-between; padding-top: 6px; padding-bottom: 6px; margin-top: 6px;" onclick="openUpscaleSubmenu('scale')">
+                  <span>Độ phóng đại (Scale)</span>
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <span id="wizard-upscale-scale-label" style="font-size: 13px; color: #8b8ea9;">x2 (Gấp đôi)</span>
+                    <span style="font-size: 18px; color: #8b8ea9; line-height: 1;">›</span>
+                  </div>
+                </div>
+
+                <label class="check-menu-item" style="display: flex; align-items: flex-start; gap: 12px; margin-top: 4px; padding-top: 6px; padding-bottom: 6px;">
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <span style="font-size: 14px; font-weight: 600; color: #ffffff; line-height: 1.2;">Giữ nguyên kích thước gốc</span>
+                    <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; line-height: 1.2;">Hệ thống tự động resize ảnh về cỡ gốc sau khi làm nét</span>
+                  </div>
+                  <input type="checkbox" id="wizard-upscale-keep-size" checked style="display: none;" onchange="updateWizardModelLabel()">
+                  <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; margin-top: 2px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </label>
+
+                <label class="check-menu-item" style="display: flex; align-items: flex-start; gap: 12px; margin-top: 4px; padding-top: 6px; padding-bottom: 6px;">
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <span style="font-size: 14px; font-weight: 600; color: #ffffff; line-height: 1.2;">Phục hồi chi tiết nhỏ (Chống giả)</span>
+                    <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; line-height: 1.2;">Lấy chi tiết từ ảnh gốc đã chọn để giữ đèn, ổ điện, quạt, cây cối...</span>
+                  </div>
+                  <input type="checkbox" id="wizard-upscale-blend-original" checked style="display: none;">
+                  <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; margin-top: 2px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </label>
+              </div>
+
+              <!-- Scale Sub-menu View -->
+              <div id="wizard-upscale-prefs-scale" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 0.25s ease; transform: translateX(100%); background: #1f1f23; z-index: 2; display: flex; flex-direction: column; padding: 8px 12px; box-sizing: border-box;">
+                <div style="display: flex; align-items: center; margin-bottom: 6px; padding: 2px 4px; border-bottom: 1px solid #3f3f46; padding-bottom: 6px;">
+                  <button type="button" style="background: none; border: none; color: #a1a1aa; font-size: 22px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background 0.15s ease, color 0.15s ease; line-height: 1;"
+                          onclick="closeUpscaleSubmenu('scale')"
+                          onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff';"
+                          onmouseout="this.style.background='none'; this.style.color='#a1a1aa';">
+                    ‹
+                  </button>
+                  <span style="font-size: 13px; font-weight: 600; color: #e4e4e7; margin-left: 8px;">Độ phóng đại (Scale)</span>
+                </div>
+                
+                <div style="overflow-y: auto; flex: 1; padding-right: 4px;" class="custom-scrollbar">
+                  <label class="check-menu-item upscale-scale-item active" onclick="selectUpscaleScale('upscale_2x', 'x2 (Gấp đôi)')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">x2 (Gấp đôi)</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Khuyên dùng cho mọi ảnh</span>
+                    </div>
+                    <svg class="check-icon upscale-scale-check" id="check-upscale-2x" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: block; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+
+                  <label class="check-menu-item upscale-scale-item" id="item-upscale-4x" onclick="selectUpscaleScale('upscale_4x', 'x4 (Chỉ hỗ trợ Local)')" style="display: flex; align-items: center; padding: 6px 12px; margin: 4px 8px; justify-content: flex-start;">
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                      <span style="font-size: 13px; font-weight: 600; color: #ffffff; line-height: 1.2;">x4 (Chỉ hỗ trợ Local)</span>
+                      <span style="font-size: 11px; color: #a1a1aa; font-weight: normal; margin-top: 1px; line-height: 1.2;">Đòi hỏi tải mô hình Local x4</span>
+                    </div>
+                    <svg class="check-icon upscale-scale-check" id="check-upscale-4x" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none; margin-left: auto; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <button id="btn-wizard-continue" class="btn btn-wizard-continue" onclick="submitWizard()">
+            <span>Tiếp tục</span>
+            <span class="btn-arrow">›</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropbox Picker Modal -->
+  <div id="dropbox-picker-modal" class="modal-backdrop hidden">
+    <div class="modal-card dropbox-picker-card">
+      <div class="modal-header" style="display: flex; align-items: center; gap: 8px;">
+        <img src="assets/dropbox-logo.svg" alt="Dropbox Logo" style="width: 20px; height: 20px; object-fit: contain;" />
+        <h3 id="dropbox-picker-title" style="margin: 0;">Chọn Dropbox</h3>
+        <button class="btn-close-modal" onclick="closeDropboxPicker()" style="margin-left: auto;">✕</button>
+      </div>
+      <div class="dropbox-picker-toolbar">
+        <button class="btn btn-secondary" onclick="navigateDropboxParent()">Quay lại</button>
+        <div id="dropbox-picker-path" class="dropbox-picker-path">/</div>
+      </div>
+      <div class="dropbox-picker-link-input-row" style="padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.01);">
+        <input type="text" id="dropbox-picker-link-field" placeholder="Hoặc dán link chia sẻ Dropbox vào đây..." style="flex: 1; padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; background: rgba(0,0,0,0.2); color: var(--text-main); font-size: 12px;" onkeydown="if(event.key === 'Enter') submitDropboxLinkFromPicker()" />
+        <button class="btn btn-primary" onclick="submitDropboxLinkFromPicker()" style="padding: 7px 12px; font-size: 12px; height: auto; flex-shrink: 0;">Áp dụng link</button>
+      </div>
+      <div class="modal-body dropbox-picker-body">
+        <div id="dropbox-picker-loading" class="dropbox-picker-loading hidden">Đang tải Dropbox...</div>
+        <div id="dropbox-picker-list" class="dropbox-picker-list"></div>
+      </div>
+      <div class="modal-footer dropbox-picker-footer" style="justify-content: space-between; align-items: center;">
+        <button class="btn btn-danger btn-dropbox-logout" onclick="logoutDropboxFromPicker()">Đăng xuất</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-secondary" onclick="closeDropboxPicker()">Hủy</button>
+          <button id="btn-dropbox-select-current" class="btn btn-primary" onclick="selectCurrentDropboxPath()">Chọn thư mục này</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listing Images Modal -->
+  <div id="listing-images-modal" class="modal-backdrop hidden">
+    <div class="modal-card" style="max-width: 800px; width: 90%;">
+      <div class="modal-header">
+        <h3 id="listing-images-title">Hình ảnh dự án</h3>
+        <button class="btn-close-modal" onclick="closeListingImagesModal()">✕</button>
+      </div>
+      <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+        <div id="listing-images-loading" class="hidden" style="text-align: center; padding: 20px;">
+          Đang tải hình ảnh...
+        </div>
+        <div id="listing-images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-top: 1px solid var(--border); gap: 12px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <span style="font-size: 14px; color: var(--text-secondary);">Đã chọn: <strong id="selected-images-count" style="color: var(--primary);">0</strong> ảnh</span>
+          <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="selectAllListingImages(true)">Chọn tất cả</button>
+          <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="selectAllListingImages(false)">Bỏ chọn</button>
+        </div>
+        <button id="btn-download-selected-images" class="btn btn-primary" style="padding: 10px 20px; font-size: 14px;" onclick="downloadSelectedImages()" disabled>
+          Tải ảnh đã chọn
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Style Profiles Modal -->
+  <div id="style-profiles-modal" class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 9999; display: none; justify-content: center; align-items: center;">
+    <div class="modal" style="width: 95%; max-width: 880px; background-color: #18181b; border: 1px solid #27272a; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column;">
+      
+      <!-- Top header for the whole modal -->
+      <div class="modal-header" style="border-bottom: 1px solid #27272a; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="color: white; margin: 0; font-size: 15px; font-weight: 600;">Cấu hình Profile & Model AutoHDR</h3>
+        <button class="btn-close-modal" style="color: #a1a1aa; background: transparent; border: none; cursor: pointer; font-size: 16px;" onclick="closeStyleProfilesModal()">✕</button>
+      </div>
+
+      <!-- Main Body split into 2 columns -->
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; max-height: 75vh; overflow: hidden;">
+        
+        <!-- LEFT COLUMN: Profile Style Settings -->
+        <div style="flex: 1; min-width: 320px; display: flex; flex-direction: column; border-right: 1px solid #27272a; max-height: 75vh;">
+          <!-- Profile header dropdown -->
+          <div style="border-bottom: 1px solid #27272a; padding: 0 20px; height: 64px; display: flex; align-items: center; gap: 8px; background-color: #141416; box-sizing: border-box;">
+            <div style="position: relative; flex: 1;">
+              <select id="style-profile-select" class="form-control" style="background-color: #27272a; color: white; border: 1px solid #3f3f46; border-radius: 6px; padding: 8px 12px; font-weight: 500; appearance: none; width: 100%; cursor: pointer;" onchange="handleStyleProfileSelectChange()">
+                <option value="default">Default</option>
+                <option value="new">+ New profile</option>
+              </select>
+              <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+            <button id="sp-btn-rename" class="btn-icon" style="margin-left: 8px; color: #a1a1aa; background: transparent; border: none; cursor: pointer; display: none;" onclick="renameStyleProfile()" title="Đổi tên">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </button>
+            <button id="sp-btn-delete" class="btn-icon" style="margin-left: 4px; color: #ef4444; background: transparent; border: none; cursor: pointer; display: none;" onclick="deleteStyleProfile()" title="Xoá">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </button>
+          </div>
+
+          <!-- Profile Body (Scrollable) -->
+          <div class="modal-body custom-scrollbar" style="padding: 16px 20px; overflow-y: auto; flex: 1;">
+            <!-- Tabs -->
+            <div style="display: flex; border-radius: 6px; background-color: #27272a; padding: 4px; margin-bottom: 20px;">
+              <button id="sp-tab-interior" class="btn" style="flex: 1; background-color: #ec4899; color: #ffffff; border: none; border-radius: 4px; font-weight: 600; padding: 8px;" onclick="switchStyleProfileTab('interior')">Interior</button>
+              <button id="sp-tab-exterior" class="btn" style="flex: 1; background-color: transparent; color: #a1a1aa; border: none; border-radius: 4px; font-weight: 600; padding: 8px;" onclick="switchStyleProfileTab('exterior')">Exterior</button>
+            </div>
+
+            <div id="sp-sliders-container" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- Basic Sliders will be injected here via JS -->
+            </div>
+
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #3f3f46;">
+              <h4 style="font-size: 11px; font-weight: 800; color: #d4d4d8; letter-spacing: 1px; margin-bottom: 12px;">COLOR MIXER</h4>
+              <div id="sp-color-mixer-dots" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                <!-- Color dots injected here via JS -->
+              </div>
+              <div id="sp-color-mixer-sliders" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; background-color: #27272a; border-radius: 8px;">
+                <!-- HSL Sliders injected here via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Footer -->
+          <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #27272a; display: flex; flex-direction: column; gap: 12px; background-color: #141416; min-height: 108px; height: auto; box-sizing: border-box; justify-content: flex-end;">
+            <label id="sp-label-default" style="display: flex; align-items: center; gap: 8px; color: #d4d4d8; font-size: 13px; cursor: pointer; display: none;">
+              <input type="checkbox" id="sp-is-default" style="accent-color: #ec4899; width: 16px; height: 16px; cursor: pointer;" checked>
+              Đặt làm Profile mặc định
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; color: #d4d4d8; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="sp-multi-style" style="accent-color: #ec4899; width: 16px; height: 16px; cursor: pointer;">
+              Chế độ nhiều style (xử lý tuần tự)
+            </label>
+            <button class="btn" style="width: 100%; background-color: #ec4899; color: #ffffff; font-weight: 600; padding: 12px; border-radius: 6px; font-size: 15px; height: 46px; display: flex; align-items: center; justify-content: center;" onclick="saveStyleProfile()">Lưu Profile</button>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: System Model Config (Style Settings) -->
+        <div style="flex: 1; min-width: 320px; display: flex; flex-direction: column; max-height: 75vh;">
+          <!-- Model Header -->
+          <div style="border-bottom: 1px solid #27272a; padding: 0 20px; background-color: #141416; height: 64px; display: flex; align-items: center; box-sizing: border-box;">
+            <h4 style="color: white; margin: 0; font-size: 14px; font-weight: 600;">Cấu hình Model & Tính năng bổ sung</h4>
+          </div>
+
+          <!-- Model Body (Scrollable) -->
+          <div class="modal-body custom-scrollbar" style="padding: 16px 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px;">
+            <div class="menu-item-group" style="margin-top: 0; display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 13px; font-weight: 600; color: #d4d4d8; display: block; margin: 0;">Indoor Model</label>
+              <div style="position: relative; width: 100%;">
+                <select id="setting-indoor-model" class="form-control" style="background-color: #27272a; color: white; border: 1px solid #3f3f46; border-radius: 6px; padding: 8px 12px; font-weight: 500; appearance: none; width: 100%; cursor: pointer;">
+                  <!-- Injected via JS -->
+                </select>
+                <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; align-items: center;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="menu-item-group" style="margin-top: 0; display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 13px; font-weight: 600; color: #d4d4d8; display: block; margin: 0;">Outdoor Model</label>
+              <div style="position: relative; width: 100%;">
+                <select id="setting-outdoor-model" class="form-control" style="background-color: #27272a; color: white; border: 1px solid #3f3f46; border-radius: 6px; padding: 8px 12px; font-weight: 500; appearance: none; width: 100%; cursor: pointer;">
+                  <!-- Injected via JS -->
+                </select>
+                <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; align-items: center;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="menu-item-group" style="margin-top: 0; display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 13px; font-weight: 600; color: #d4d4d8; display: block; margin: 0;">Default Twilight Model</label>
+              <div style="position: relative; width: 100%;">
+                <select id="setting-twilight-model" class="form-control" style="background-color: #27272a; color: white; border: 1px solid #3f3f46; border-radius: 6px; padding: 8px 12px; font-weight: 500; appearance: none; width: 100%; cursor: pointer;">
+                  <!-- Injected via JS -->
+                </select>
+                <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; align-items: center;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="menu-item-group" style="margin-top: 0; display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 13px; font-weight: 600; color: #d4d4d8; display: block; margin: 0;">TV Screen Replacement</label>
+              <div style="position: relative; width: 100%;">
+                <select id="setting-tv-replacement" class="form-control" style="background-color: #27272a; color: white; border: 1px solid #3f3f46; border-radius: 6px; padding: 8px 12px; font-weight: 500; appearance: none; width: 100%; cursor: pointer;">
+                  <option value="none">Không thay thế</option>
+                  <option value="blackout">Tối / Tắt</option>
+                  <option value="beach">Bãi biển</option>
+                  <option value="mountain">Núi non</option>
+                  <option value="city">Thành phố</option>
+                  <option value="custom">Ảnh tùy chỉnh</option>
+                </select>
+                <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; align-items: center;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Switches list (Grid 2-column) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; margin-top: 8px; border-top: 1px solid #27272a; padding-top: 16px;">
+              
+              <div class="sp-switch-container">
+                <span class="sp-switch-label">Fire in Fireplace</span>
+                <label class="sp-switch">
+                  <input type="checkbox" id="setting-fire-fireplace">
+                  <span class="sp-slider"></span>
+                </label>
+              </div>
+
+              <div class="sp-switch-container">
+                <span class="sp-switch-label">Declutter</span>
+                <label class="sp-switch">
+                  <input type="checkbox" id="setting-declutter">
+                  <span class="sp-slider"></span>
+                </label>
+              </div>
+
+              <div class="sp-switch-container">
+                <span class="sp-switch-label">Deduplication</span>
+                <label class="sp-switch">
+                  <input type="checkbox" id="setting-deduplication">
+                  <span class="sp-slider"></span>
+                </label>
+              </div>
+
+              <div class="sp-switch-container">
+                <span class="sp-switch-label">Walkthrough Reorder</span>
+                <label class="sp-switch">
+                  <input type="checkbox" id="setting-walkthrough-reorder">
+                  <span class="sp-slider"></span>
+                </label>
+              </div>
+
+              <div class="sp-switch-container">
+                <span class="sp-switch-label">Perspective Correction</span>
+                <label class="sp-switch">
+                  <input type="checkbox" id="setting-perspective">
+                  <span class="sp-slider"></span>
+                </label>
+              </div>
+
+              <div class="sp-switch-container">
+                <span class="sp-switch-label">Grass Replacement</span>
+                <label class="sp-switch">
+                  <input type="checkbox" id="setting-grass-replacement">
+                  <span class="sp-slider"></span>
+                </label>
+              </div>
+
+              <div class="sp-switch-container">
+                <span class="sp-switch-label">Sign Removal</span>
+                <label class="sp-switch">
+                  <input type="checkbox" id="setting-sign-removal">
+                  <span class="sp-slider"></span>
+                </label>
+              </div>
+
+              <div class="sp-switch-container">
+                <span class="sp-switch-label">Retain Original Sky</span>
+                <label class="sp-switch">
+                  <input type="checkbox" id="setting-retain-sky">
+                  <span class="sp-slider"></span>
+                </label>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Model Footer -->
+          <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #27272a; display: flex; gap: 12px; background-color: #141416; height: 108px; box-sizing: border-box; align-items: flex-end;">
+            <button class="btn" style="flex: 1; background-color: #27272a; color: #a1a1aa; border: 1px solid #3f3f46; font-weight: 600; padding: 12px; border-radius: 6px; font-size: 14px; height: 46px; display: flex; align-items: center; justify-content: center;" onclick="resetStyleSettings()">Đặt lại mặc định</button>
+            <button class="btn" style="flex: 2; background-color: #ec4899; color: #ffffff; font-weight: 600; padding: 12px; border-radius: 6px; font-size: 14px; height: 46px; display: flex; align-items: center; justify-content: center;" onclick="saveStyleSettings()">Lưu thay đổi</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Alert Modal -->
+  <div id="custom-alert-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 100000; display: none; justify-content: center; align-items: center; font-family: 'Outfit', sans-serif;">
+    <div style="width: 90%; max-width: 360px; background-color: #18181b; border: 1px solid #27272a; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; padding: 24px; align-items: center; text-align: center; box-sizing: border-box;">
+      <img src="assets/autofotello-app-logo.png" style="width: 56px; height: 56px; margin-bottom: 16px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+      <div id="custom-alert-message" style="color: #e4e4e7; font-size: 14px; font-weight: 500; line-height: 1.5; margin-bottom: 24px; white-space: pre-wrap; word-break: break-word;">Thông báo</div>
+      <button class="btn" style="min-width: 120px; background-color: #ec4899; color: #ffffff; font-weight: 600; padding: 10px 24px; border-radius: 6px; font-size: 14px; cursor: pointer; border: none; outline: none; transition: background 0.15s ease;" onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
+
+  <!-- Custom Confirm Modal -->
+  <div id="custom-confirm-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 100001; display: none; justify-content: center; align-items: center; font-family: 'Outfit', sans-serif;">
+    <div style="width: 90%; max-width: 360px; background-color: #18181b; border: 1px solid #27272a; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; padding: 24px; align-items: center; text-align: center; box-sizing: border-box;">
+      <img src="assets/autofotello-app-logo.png" style="width: 56px; height: 56px; margin-bottom: 16px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+      <div id="custom-confirm-message" style="color: #e4e4e7; font-size: 14px; font-weight: 500; line-height: 1.5; margin-bottom: 24px; white-space: pre-wrap; word-break: break-word;">Xác nhận</div>
+      <div style="display: flex; gap: 12px; width: 100%;">
+        <button id="btn-confirm-cancel" class="btn" style="flex: 1; background-color: #27272a; color: #a1a1aa; border: 1px solid #3f3f46; font-weight: 600; padding: 10px 16px; border-radius: 6px; font-size: 14px; cursor: pointer;" onclick="handleCustomConfirm(false)">Hủy</button>
+        <button id="btn-confirm-ok" class="btn" style="flex: 1; background-color: #ec4899; color: #ffffff; font-weight: 600; padding: 10px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; border: none;" onclick="handleCustomConfirm(true)">Đồng ý</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Prompt Modal -->
+  <div id="custom-prompt-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 100002; display: none; justify-content: center; align-items: center; font-family: 'Outfit', sans-serif;">
+    <div style="width: 90%; max-width: 360px; background-color: #18181b; border: 1px solid #27272a; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; padding: 24px; box-sizing: border-box;">
+      <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+        <img src="assets/autofotello-app-logo.png" style="width: 56px; height: 56px; margin-bottom: 16px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+        <div id="custom-prompt-message" style="color: #e4e4e7; font-size: 14px; font-weight: 500; line-height: 1.5; margin-bottom: 16px; white-space: pre-wrap; word-break: break-word; text-align: center;">Nhập thông tin</div>
+      </div>
+      <input type="text" id="custom-prompt-input" style="width: 100%; padding: 10px 12px; border: 1px solid #3f3f46; border-radius: 6px; background-color: #09090b; color: #ffffff; font-size: 14px; margin-bottom: 20px; box-sizing: border-box; outline: none;" onkeydown="if(event.key === 'Enter') handleCustomPrompt(true)" />
+      <div style="display: flex; gap: 12px; width: 100%;">
+        <button class="btn" style="flex: 1; background-color: #27272a; color: #a1a1aa; border: 1px solid #3f3f46; font-weight: 600; padding: 10px 16px; border-radius: 6px; font-size: 14px; cursor: pointer;" onclick="handleCustomPrompt(false)">Cancel</button>
+        <button class="btn" style="flex: 1; background-color: #ec4899; color: #ffffff; font-weight: 600; padding: 10px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; border: none;" onclick="handleCustomPrompt(true)">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let customAlertQueue = [];
+    window.alert = function(message) {
+      customAlertQueue.push(message);
+      if (customAlertQueue.length === 1) {
+        showNextCustomAlert();
+      }
+    };
+
+    function showNextCustomAlert() {
+      if (customAlertQueue.length === 0) return;
+      const msg = customAlertQueue[0];
+      document.getElementById('custom-alert-message').innerText = msg;
+      document.getElementById('custom-alert-modal').style.display = 'flex';
+    }
+
+    function closeCustomAlert() {
+      document.getElementById('custom-alert-modal').style.display = 'none';
+      customAlertQueue.shift();
+      if (customAlertQueue.length > 0) {
+        showNextCustomAlert();
+      }
+    }
+
+    let confirmResolver = null;
+    window.confirm = function(message, okLabel = 'Đồng ý', cancelLabel = 'Hủy') {
+      document.getElementById('custom-confirm-message').innerText = message;
+      document.getElementById('btn-confirm-ok').innerText = okLabel;
+      document.getElementById('btn-confirm-cancel').innerText = cancelLabel;
+      document.getElementById('custom-confirm-modal').style.display = 'flex';
+      return new Promise((resolve) => {
+        confirmResolver = resolve;
+      });
+    };
+
+    function handleCustomConfirm(value) {
+      document.getElementById('custom-confirm-modal').style.display = 'none';
+      if (confirmResolver) {
+        confirmResolver(value);
+        confirmResolver = null;
+      }
+    }
+
+    let promptResolver = null;
+    window.prompt = function(message, defaultValue = '') {
+      document.getElementById('custom-prompt-message').innerText = message;
+      const inputEl = document.getElementById('custom-prompt-input');
+      inputEl.value = defaultValue;
+      document.getElementById('custom-prompt-modal').style.display = 'flex';
+      setTimeout(() => inputEl.focus(), 50);
+      return new Promise((resolve) => {
+        promptResolver = resolve;
+      });
+    };
+
+    function handleCustomPrompt(submitted) {
+      const inputEl = document.getElementById('custom-prompt-input');
+      const val = inputEl.value;
+      document.getElementById('custom-prompt-modal').style.display = 'none';
+      if (promptResolver) {
+        promptResolver(submitted ? val : null);
+        promptResolver = null;
+      }
+    }
+  </script>
+
+  <!-- FREE CREDITS GIFT DIALOG -->
+  <div id="free-credits-gift-modal" class="modal-backdrop hidden" style="z-index: 10000; display: flex; align-items: center; justify-content: center;">
+    <div class="modal-card" style="max-width: 400px; text-align: center; padding: 28px; background: radial-gradient(circle at top, #500724 0%, #0f0f15 100%); border: 1.5px solid #db2777; box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3); border-radius: 12px; position: relative;">
+      <div style="font-size: 64px; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(167, 139, 250, 0.6));">🎁</div>
+      <h3 style="color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 8px;">Bạn Đã Mở Khóa Quà Tặng Ẩn!</h3>
+      <p style="color: #c084fc; font-size: 14px; font-weight: 700; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; animation: pulse 2s infinite;">✓ Mã Bí Mật Chính Xác</p>
+      <p style="color: #a0aec0; font-size: 13px; line-height: 1.5; margin-bottom: 24px;">
+        Chúc mừng! Bạn đã nhập đúng mã và mở khóa lệnh ẩn nhận <strong>70 Credits miễn phí</strong> từ AutoHDR.
+      </p>
+      
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button id="btn-gift-decline" class="btn btn-secondary" style="flex: 1; padding: 12px; font-weight: 600; border-radius: 8px;" onclick="closeFreeCreditsGiftModal()">
+          Để sau
+        </button>
+        <button id="btn-gift-accept" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700; background: linear-gradient(135deg, #8b5cf6 0%, #db2777 100%); border: none; border-radius: 8px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);" onclick="claimFreeCreditsGift()">
+          Nhận 70 Credits
+        </button>
+      </div>
+      
+      <div id="gift-claim-status" class="hidden" style="margin-top: 16px; font-size: 12px; color: #f9a8d4; font-family: monospace; text-align: center;"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  <script src="style_profiles.js?v=26"></script>
+  <script src="index.js?v=4"></script>
+</body>
+</html>
