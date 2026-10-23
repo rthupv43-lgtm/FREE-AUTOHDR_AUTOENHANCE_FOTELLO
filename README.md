@@ -1,31 +1,30 @@
 # T&T - Real Estate Photo Processing Tool
 
-Công cụ tự động Upload & Xử lý ảnh HDR bất động sản (hỗ trợ **AutoHDR**, **Autoenhance**, **Fotello**).
+Automated multi-threaded HDR real estate photo upload and processing desktop application (supporting **AutoHDR**, **Autoenhance**, and **Fotello**).
 
-## Tính năng chính
-- **Upload & Enhance đa luồng**: Tự động chuyển đổi ảnh RAW (`.ARW`, `.CR2`, `.CR3`, `.NEF`, `.DNG`...) và nén tối ưu trước khi tải lên.
-- **Tải ảnh chất lượng gốc (Full Resolution)**: Tự động tải ảnh đã xử lý không dính watermark, giữ nguyên độ phân giải gốc (`300 DPI`).
-- **Quản lý & Tải Listings cũ**: Xem trước và tải lại các dự án đã xử lý trước đó.
+## Key Features
+- **Multi-threaded Upload & Enhance**: Automatically converts RAW photos (`.ARW`, `.CR2`, `.CR3`, `.NEF`, `.DNG`, etc.) and optimizes file size prior to uploading.
+- **Full-Resolution Clean Downloads**: Automatically downloads processed images without watermarks while preserving original dimensions (`300 DPI`).
+- **Project History & Batch Download**: Preview and re-download previously processed listings and orders in parallel.
 
-## Cách sử dụng bản đóng gói sẵn (.exe)
-1. Vào mục **Releases** ở cột bên phải trang GitHub này.
-2. Tải file **`T&T.exe`** về máy tính (Windows 10/11 64-bit) và mở chạy trực tiếp (không cần cài đặt Python).
+## Pre-built Standalone Executable (`.exe`)
+1. Go to the **[Releases](https://github.com/phamthanhtuan25091996-code/he-nho/releases)** section on the right side of this GitHub repository.
+2. Download **`T&T.exe`** (Windows 10/11 64-bit) and run it directly — no Python installation required.
 
-## Cách chạy từ mã nguồn (Dành cho lập trình viên)
+## Running from Source (For Developers)
 
-### 1. Cài đặt thư viện
-Yêu cầu **Python 3.12+**:
+### 1. Install Dependencies
+Requires **Python 3.12+**:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Chạy ứng dụng
+### 2. Run the Application
 ```bash
 python main.py
 ```
 
-### 3. Đóng gói ra file `.exe`
+### 3. Build Standalone `.exe`
 ```bash
 pyinstaller "T&T.spec" --noconfirm
 ```
-
