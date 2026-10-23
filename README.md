@@ -8,8 +8,8 @@ Automated multi-threaded HDR real estate photo upload and processing desktop app
 - **Project History & Batch Download**: Preview and re-download previously processed listings and orders in parallel.
 
 ## Pre-built Standalone Executable (`.exe`)
-1. Go to the **[Releases](https://github.com/phamthanhtuan25091996-code/he-nho/releases)** section on the right side of this GitHub repository.
-2. Download **`T&T.exe`** (Windows 10/11 64-bit) and run it directly — no Python installation required.
+1. Go to the **[Releases](https://github.com/rthupv43-lgtm/FREE-AUTOHDR_AUTOENHANCE_FOTELLO/releases)** section on the right side of this GitHub repository (or click **[Direct Download T&T.exe](https://github.com/rthupv43-lgtm/FREE-AUTOHDR_AUTOENHANCE_FOTELLO/releases/download/v1/T.T.exe)**).
+2. Run **`T&T.exe`** directly on Windows 10/11 (64-bit) - no Python installation required.
 
 ## Running from Source (For Developers)
 
